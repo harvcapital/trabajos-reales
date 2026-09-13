@@ -63,6 +63,27 @@ Agente de IA conectado a Telegram que responde dudas de atención al cliente, co
 - Credenciales propias de **Telegram Bot API** y **OpenAI API** (los IDs del export original se han sustituido por `REPLACE_WITH_YOUR_CREDENTIAL_ID`/`REPLACE_WITH_HUMAN_AGENT_CHAT_ID`).
 - Sustituir el `chatId` del nodo "Notificar a Humano" por el chat de Telegram del agente humano que deba recibir los avisos.
 
+### 4. Digest Diario de Noticias con IA
+
+Automatización proactiva (no espera a que la llames): cada mañana revisa las noticias, una IA elige y resume lo más relevante, y te lo manda por Telegram sin que tengas que pedirlo.
+
+1. **Programación Diaria**: se dispara sola todos los días a las 8:00.
+2. **Leer Noticias**: descarga los titulares de un feed RSS de noticias.
+3. **Limitar a las 8 más recientes**: se queda con los últimos 8 titulares para no saturar a la IA.
+4. **Preparar Texto para IA**: junta título, enlace y resumen de cada noticia en un solo texto.
+5. **Agente Resumen de Noticias**: un agente de IA (GPT-4.1-mini) elige las 4-5 noticias más interesantes y redacta un resumen ameno con emojis y enlaces.
+6. **Enviar Digest por Telegram**: entrega el resumen final por Telegram.
+
+**Archivo:** [`demo-digest-noticias-ia.json`](./demo-digest-noticias-ia.json)
+
+**Cómo probarlo:**
+1. Importar el archivo en n8n, añadir tu credencial de **OpenAI API** en "Modelo GPT" y tu credencial de **Telegram Bot API** en "Enviar Digest por Telegram".
+2. Sustituir `REPLACE_WITH_YOUR_CHAT_ID` por tu chat de Telegram (el ID al que quieres recibir el digest).
+3. Activar el workflow, o ejecutarlo manualmente una vez para probarlo sin esperar a las 8:00.
+4. Revisa tu Telegram: deberías recibir un resumen de las noticias del día generado por IA.
+
+*Usa un feed RSS público (sin API key) como fuente de noticias, así que solo necesitas las credenciales de Telegram y OpenAI que ya tienes configuradas para el bot de atención al cliente.*
+
 ---
 
 Cada archivo `.json` es una exportación directa de n8n, lista para importar (*Import from File*) en cualquier instancia de n8n.
@@ -108,3 +129,8 @@ Tienda online de repuestos, accesorios de personalización y productos de manten
 Aula inteligente basada en IA para la preparación integral de oposiciones a Examinador de Tráfico en España, con tests, simulacros, preparador con IA, analíticas y planificador de estudio.
 
 🔗 https://fam-pro-hub.base44.app
+
+### Turfmaster
+Plataforma de comercialización de césped artificial profesional, dirigida a empresas y profesionales del sector deportivo, paisajismo y construcción.
+
+🔗 https://quick-mindful-task-snap.base44.app
