@@ -65,8 +65,6 @@ Agente de IA conectado a Telegram que responde dudas de atención al cliente, co
 
 ### 4. Digest Diario de Noticias con IA
 
-✅ **Probado en producción**: desplegado y ejecutado en un n8n real, con entrega confirmada del resumen por Telegram.
-
 Automatización proactiva (no espera a que la llames): cada mañana revisa las noticias, una IA elige y resume lo más relevante, y te lo manda por Telegram sin que tengas que pedirlo.
 
 1. **Programación Diaria**: se dispara sola todos los días a las 8:00.
