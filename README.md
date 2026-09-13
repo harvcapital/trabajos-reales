@@ -1,8 +1,12 @@
-# Demos de Automatización con n8n
+# Portfolio de Automatización y Desarrollo Web
 
-Colección de workflows de demostración creados en [n8n](https://n8n.io/) para mostrar distintos casos de uso de automatización: procesamiento de datos vía webhook, consulta a APIs externas, e integración de un agente de IA con memoria y herramientas.
+Colección de proyectos para candidatura: workflows de automatización creados en [n8n](https://n8n.io/) y webs desarrolladas con [Base44](https://base44.com/).
 
-## 1. Webhook Transformación Respuesta
+## Workflows de n8n
+
+Procesamiento de datos vía webhook, consulta a APIs externas, e integración de un agente de IA con memoria y herramientas.
+
+### 1. Webhook Transformación Respuesta
 
 Flujo sencillo que recibe datos por webhook y devuelve una respuesta transformada.
 
@@ -22,7 +26,7 @@ Flujo sencillo que recibe datos por webhook y devuelve una respuesta transformad
 2. Enviar un `POST` al webhook con `{ "nombre": "Ruben" }`.
 3. La respuesta incluye el mensaje personalizado y los campos transformados.
 
-## 2. Clima en Vivo
+### 2. Clima en Vivo
 
 Consulta el clima actual de cualquier ciudad combinando dos APIs públicas.
 
@@ -42,7 +46,7 @@ Consulta el clima actual de cualquier ciudad combinando dos APIs públicas.
 
 *No requiere credenciales: las APIs de Open-Meteo son públicas y gratuitas.*
 
-## 3. Bot de Atención al Cliente (Telegram)
+### 3. Bot de Atención al Cliente (Telegram)
 
 Agente de IA conectado a Telegram que responde dudas de atención al cliente, con memoria de conversación, soporte de notas de voz y escalado a un agente humano.
 
@@ -62,3 +66,20 @@ Agente de IA conectado a Telegram que responde dudas de atención al cliente, co
 ---
 
 Cada archivo `.json` es una exportación directa de n8n, lista para importar (*Import from File*) en cualquier instancia de n8n.
+
+## Webs desarrolladas con Base44
+
+### Estudio Ruben
+Portafolio profesional de servicios de diseño visual y desarrollo de aplicaciones web, orientado a captar clientes que buscan proyectos de alta gama.
+
+🔗 https://webs-ruben.base44.app
+
+### Aser Alba Jardinería Profesional
+Web de negocio de jardinería con catálogo de servicios (diseño de jardines, mantenimiento, riego automático, poda, jardines zen y paisajismo), sección de proyectos realizados y formulario de contacto/presupuesto.
+
+🔗 https://aser-alba-jardin.base44.app
+
+### Aurum Motors
+Plataforma de venta de vehículos de ocasión premium, dirigida a compradores interesados en coches de marcas de lujo de segunda mano.
+
+🔗 https://aurummotor.base44.app
