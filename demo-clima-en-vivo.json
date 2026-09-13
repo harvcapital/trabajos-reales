@@ -1,0 +1,284 @@
+{
+  "name": "Demo - Clima en Vivo",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "clima-demo",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "c1000001-0000-4000-8000-000000000001",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -608,
+        0
+      ],
+      "webhookId": "clima-demo-webhook"
+    },
+    {
+      "parameters": {
+        "url": "https://geocoding-api.open-meteo.com/v1/search",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "name",
+              "value": "={{ $json.body.ciudad }}"
+            },
+            {
+              "name": "count",
+              "value": "1"
+            },
+            {
+              "name": "language",
+              "value": "es"
+            },
+            {
+              "name": "format",
+              "value": "json"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "c1000001-0000-4000-8000-000000000002",
+      "name": "Buscar Ciudad",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -368,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "d1e2f3a4-0000-4000-8000-000000000001",
+              "leftValue": "={{ $json.results ? $json.results.length : 0 }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "gt",
+                "name": "filter.operator.gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "c1000001-0000-4000-8000-000000000006",
+      "name": "¿Ciudad encontrada?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -128,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://api.open-meteo.com/v1/forecast",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "latitude",
+              "value": "={{ $json.results[0].latitude }}"
+            },
+            {
+              "name": "longitude",
+              "value": "={{ $json.results[0].longitude }}"
+            },
+            {
+              "name": "current_weather",
+              "value": "true"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "c1000001-0000-4000-8000-000000000003",
+      "name": "Consultar Clima",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        128,
+        -80
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "b1",
+              "name": "ciudad",
+              "type": "string",
+              "value": "={{ $('Buscar Ciudad').item.json.results[0].name }}"
+            },
+            {
+              "id": "b2",
+              "name": "pais",
+              "type": "string",
+              "value": "={{ $('Buscar Ciudad').item.json.results[0].country }}"
+            },
+            {
+              "id": "b3",
+              "name": "temperatura_c",
+              "type": "number",
+              "value": "={{ $json.current_weather.temperature }}"
+            },
+            {
+              "id": "b4",
+              "name": "viento_kmh",
+              "type": "number",
+              "value": "={{ $json.current_weather.windspeed }}"
+            },
+            {
+              "id": "b5",
+              "name": "mensaje",
+              "type": "string",
+              "value": "=El clima en {{ $('Buscar Ciudad').item.json.results[0].name }} ({{ $('Buscar Ciudad').item.json.results[0].country }}) es de {{ $json.current_weather.temperature }}°C, con viento de {{ $json.current_weather.windspeed }} km/h."
+            },
+            {
+              "id": "b6",
+              "name": "estado",
+              "type": "string",
+              "value": "ok"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "c1000001-0000-4000-8000-000000000004",
+      "name": "Formatear Respuesta",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        368,
+        -80
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json }}",
+        "options": {}
+      },
+      "id": "c1000001-0000-4000-8000-000000000005",
+      "name": "Responder Éxito",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        608,
+        -80
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { \"estado\": \"error\", \"mensaje\": \"Ciudad no encontrada. Intenta con otro nombre.\" } }}",
+        "options": {
+          "responseCode": 404
+        }
+      },
+      "id": "c1000001-0000-4000-8000-000000000007",
+      "name": "Responder Error",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        128,
+        160
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Buscar Ciudad",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Buscar Ciudad": {
+      "main": [
+        [
+          {
+            "node": "¿Ciudad encontrada?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "¿Ciudad encontrada?": {
+      "main": [
+        [
+          {
+            "node": "Consultar Clima",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Responder Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Consultar Clima": {
+      "main": [
+        [
+          {
+            "node": "Formatear Respuesta",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Formatear Respuesta": {
+      "main": [
+        [
+          {
+            "node": "Responder Éxito",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "7bda78e7-bf3b-4e5d-a0f9-69ccb74d73bb",
+  "meta": {
+    "instanceId": "dd1a6537decd8b7d34ebf29b64ee4be330b45d1b09bf6b9acbbdfaa204cb7bc7"
+  },
+  "nodeGroups": [],
+  "id": "mAxRMRUiU7k4HrmA",
+  "tags": []
+}
