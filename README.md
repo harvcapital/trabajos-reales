@@ -63,6 +63,35 @@ Agente de IA conectado a Telegram que responde dudas de atención al cliente, co
 - Credenciales propias de **Telegram Bot API** y **OpenAI API** (los IDs del export original se han sustituido por `REPLACE_WITH_YOUR_CREDENTIAL_ID`/`REPLACE_WITH_HUMAN_AGENT_CHAT_ID`).
 - Sustituir el `chatId` del nodo "Notificar a Humano" por el chat de Telegram del agente humano que deba recibir los avisos.
 
+### 4. Chat con tus Documentos (RAG)
+
+Agente de IA que responde preguntas basándose únicamente en documentos que tú le proporcionas (Retrieval-Augmented Generation), citando de qué documento sale cada respuesta.
+
+**Flujo de ingesta** (indexar un documento):
+1. **Webhook Ingesta**: recibe un `POST` en `/rag-demo/ingesta` con `{ "documento_id": "...", "texto": "..." }`.
+2. **Preparar Documento**: normaliza el texto y genera un ID si no se indica.
+3. **Divisor de Texto**: trocea el documento en fragmentos de 500 caracteres con solape de 50.
+4. **Cargador de Documento** + **Embeddings Ingesta**: convierte cada fragmento en un vector numérico (embedding).
+5. **Almacén Vectorial - Insertar**: guarda los fragmentos y sus embeddings en una base de datos vectorial en memoria.
+6. **Responder Ingesta**: confirma que el documento quedó indexado.
+
+**Flujo de pregunta** (consultar):
+1. **Webhook Pregunta**: recibe un `POST` en `/rag-demo/preguntar` con `{ "pregunta": "..." }`.
+2. **Almacén Vectorial - Consultar**: busca los fragmentos más relevantes para la pregunta.
+3. **Cadena RAG**: pasa esos fragmentos + la pregunta a un modelo de IA (GPT-4.1-mini) para generar una respuesta fundamentada.
+4. **Formatear Respuesta RAG**: estructura la respuesta junto con las fuentes (metadatos de los documentos usados).
+5. **Responder Pregunta**: devuelve la respuesta y sus fuentes en JSON.
+
+**Archivo:** [`demo-rag-chat-documentos.json`](./demo-rag-chat-documentos.json)
+
+**Cómo probarlo:**
+1. Importar el archivo en n8n, añadir tu credencial de **OpenAI API** en los tres nodos que la requieren y activar el workflow.
+2. Indexar un documento: `POST /rag-demo/ingesta` con `{ "texto": "El horario de la tienda es de 9:00 a 20:00." }`.
+3. Preguntar: `POST /rag-demo/preguntar` con `{ "pregunta": "¿A qué hora abre la tienda?" }`.
+4. La respuesta se genera a partir del texto indexado, no de conocimiento genérico del modelo.
+
+*Nota: usa un almacén vectorial en memoria (sin coste ni registro extra) para que la demo sea fácil de probar; en un proyecto real se sustituiría por un vector store persistente (Pinecone, Supabase, Qdrant...). Los nodos de IA de n8n evolucionan rápido entre versiones, así que revisa los parámetros al importar por si hay que reconectarlos ligeramente en el editor.*
+
 ---
 
 Cada archivo `.json` es una exportación directa de n8n, lista para importar (*Import from File*) en cualquier instancia de n8n.
