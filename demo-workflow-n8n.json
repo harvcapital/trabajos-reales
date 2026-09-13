@@ -1,0 +1,117 @@
+{
+  "name": "Demo - Webhook Transformación Respuesta",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "demo-flow",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "1f2a3b4c-0001-4a11-9a11-000000000001",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -100,
+        0
+      ],
+      "webhookId": "demo-flow-webhook"
+    },
+    {
+      "parameters": {
+        "mode": "manual",
+        "duplicateItem": false,
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a1",
+              "name": "nombre_recibido",
+              "type": "string",
+              "value": "={{ $json.body.nombre || 'Invitado' }}"
+            },
+            {
+              "id": "a2",
+              "name": "mensaje",
+              "type": "string",
+              "value": "=¡Hola, {{ $json.body.nombre || 'Invitado' }}! Tu solicitud fue procesada correctamente."
+            },
+            {
+              "id": "a3",
+              "name": "nombre_mayusculas",
+              "type": "string",
+              "value": "={{ ($json.body.nombre || 'invitado').toUpperCase() }}"
+            },
+            {
+              "id": "a4",
+              "name": "fecha_procesado",
+              "type": "string",
+              "value": "={{ $now.toISO() }}"
+            },
+            {
+              "id": "a5",
+              "name": "estado",
+              "type": "string",
+              "value": "ok"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "1f2a3b4c-0002-4a11-9a11-000000000002",
+      "name": "Transformar datos",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        120,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json }}",
+        "options": {}
+      },
+      "id": "1f2a3b4c-0003-4a11-9a11-000000000003",
+      "name": "Responder al Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        340,
+        0
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Transformar datos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Transformar datos": {
+      "main": [
+        [
+          {
+            "node": "Responder al Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "meta": {
+    "templateCredsSetupCompleted": true
+  }
+}
